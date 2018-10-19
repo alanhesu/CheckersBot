@@ -39,7 +39,7 @@ if abs(finRow - stRow) > 2
     valid = false;
 end
 % If the jump is by 2, check that it doesn't jump over a space
-if abs(finRow - stRow) == 2
+if valid && abs(finRow - stRow) == 2
     if (board((stRow + finRow)/2, (stCol + finCol)/2) == 'x')
         valid = false;
     end

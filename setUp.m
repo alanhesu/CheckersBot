@@ -1,5 +1,5 @@
 function setUp
-
+% Set up the checkers board
 board = ['x', 'W', 'x', 'W', 'x', 'W', 'x', 'W'
         'W', 'x', 'W', 'x', 'W', 'x', 'W', 'x'
         'x', 'W', 'x', 'W', 'x', 'W', 'x', 'W'
@@ -8,33 +8,23 @@ board = ['x', 'W', 'x', 'W', 'x', 'W', 'x', 'W'
         'B', 'x', 'B', 'x', 'B', 'x', 'B', 'x'
         'x', 'B', 'x', 'B', 'x', 'B', 'x', 'B'
         'B', 'x', 'B', 'x', 'B', 'x', 'B', 'x'];
-    
-% board = ['xxxxxxxx'
-%         'xxxxWxWx'
-%         'xWxxxWxx'
-%         'xxxxxxxx'
-%         'xxxBxBxx'
-%         'xxxxBxxx'
-%         'xxxxxxxx'
-%         'xxxxxxxx'];
-
+% Allow the user to decide which colour thay play as
 person = input('Would you like to play as W or B?\n', 's');
 while (~(person == 'W' || person == 'B'))
     person = input('Please input W or B.', 's');
 end
-
-
+% Start the game
 gameCont = true;
 turn = 1;
 disp(board);
 fprintf('\n');
 while gameCont
+    % Take turns
     if mod(turn, 2) == 1
         player = 'W';
     else
         player = 'B';
     end
-    
     % If it's the player's turn, update the board with the player's move
     if player == person
         % Check that the player actually has moves
@@ -60,6 +50,7 @@ while gameCont
             if length(move) > 6
                 board = playerMove(board, player, move(5), move(6), move(7), move(8));
             end
+            % Determine if the game is over after the player moves
             if isWon(board, player)
                 gameCont = false;
                 disp('You win - congratulations!');
@@ -72,37 +63,17 @@ while gameCont
             gameCont = false;
             disp('Stalemate')
         else
-            % This is where to decide the CPU move
-            % Randomize the moves
-            boards = boards(randperm(length(boards)));
-            scores = zeros(1, length(boards));
-            for x = 1:length(boards)
-                scores(x) = scorer(boards{x}, player);
-            end
-            [~, ind] = max(scores);
-            % Gets the first random move that has the highest score
-            
-            board = boards{ind};
-            % board = boards{1};
+            % CPU makes its move
+            board = decisionMaker(boards, player);
             if isWon(board, player)
                 gameCont = false;
                 disp('Game over. Try again?');
             end
         end
     end
-    
     % Either way, print the board and increment move
     disp(board)
     fprintf('\n')
     turn = turn + 1;
 end
-
-
-
-
-
-
-
-
-
 end
