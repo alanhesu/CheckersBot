@@ -1,7 +1,7 @@
 #include <Servo.h>
 int servoPin = 9;
-int closePos = 0;
-int openPos = 90;
+int closePos = 100;
+int openPos = 110;
 int dir;
 Servo serv;
 
