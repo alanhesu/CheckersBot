@@ -13,17 +13,29 @@ end
 % Iterate through board
 for r = 1:8
     for c = 1:8
-        % Add points if the player is close to their end
+        % Add points if the player is close to their end or if they have a
+        % piece
         if board(r, c) == player
-            score = score + abs(r - start)^1.2;
+            % Add another point for having pieces
+            score = score + 1 + abs(r - start);
+            % Add additional points if we're on the 8th row
+            if r == fin
+                score = score + 2;
+            end
         elseif board(r, c) ~= 'x'
             % Subtract points if the opponent is close to their end
-            score = score - abs(r - fin)^1.2;
+            score = score - 1 - abs(r - fin);
+            if r == start
+                score = score - 2;
+            end
         end
     end
 end
+% Boost the score if it results in victory
+if isWon(board, player)
+    score = 100;
 % Lower the score if it results in defeat
-if isWon(board, opponent)
-    score = -1000;
+elseif isWon(board, opponent)
+    score = -100;
 end
 end

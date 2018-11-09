@@ -8,11 +8,19 @@ board = ['x', 'W', 'x', 'W', 'x', 'W', 'x', 'W'
         'B', 'x', 'B', 'x', 'B', 'x', 'B', 'x'
         'x', 'B', 'x', 'B', 'x', 'B', 'x', 'B'
         'B', 'x', 'B', 'x', 'B', 'x', 'B', 'x'];
-% Allow the user to decide which colour thay play as
-person = input('Would you like to play as W or B?\n', 's');
-while (~(person == 'W' || person == 'B'))
-    person = input('Please input W or B.', 's');
+    
+% Initialize the Arduino
+if ~isempty(instrfind)
+	fclose(instrfind);
+	delete(instrfind);
 end
+s = serial('COM5');
+set(s, 'BaudRate', 9600);
+fopen(s);
+% Move out
+moveIn(false);
+% Player plays as white
+person = 'W';
 % Start the game
 gameCont = true;
 turn = 1;
@@ -31,25 +39,11 @@ while gameCont
         if isempty(possibleBoards(board, player))
             gameCont = false;
             disp('Stalemate');
-        else 
-            move = input(['What is your move?', ...
-                '\nInsert a vector of the form [stRow, stCol, finRow, finCol]\n'...
-                'If you can capture again, do [row1, col1, row2, col2, row3, col3...\n']);
-            % Ensure move is legal
-            validMove = validityCheck(board, player, move);
-            while ~validMove
-               move = input(['Invalid move. Insert a vector of the form [stRow, stCol, finRow, finCol]\n'...
-                   'If you can capture again, do [row1, col1, row2, col2, row3, col3...\n']);
-               validMove = validityCheck(board, player, move);
-            end
+        else
+            % Wait 20 seconds
+            pause(20);
             % Update the board
-            board = playerMove(board, player, move(1), move(2), move(3), move(4));
-            if length(move) > 4
-                board = playerMove(board, player, move(3), move(4), move(5), move(6));
-            end
-            if length(move) > 6
-                board = playerMove(board, player, move(5), move(6), move(7), move(8));
-            end
+            board = readBoard();
             % Determine if the game is over after the player moves
             if isWon(board, player)
                 gameCont = false;
@@ -63,8 +57,14 @@ while gameCont
             gameCont = false;
             disp('Stalemate')
         else
+            % Move in
+            moveIn(true);
             % CPU makes its move
-            board = decisionMaker(boards, player);
+            newBoard = decisionMaker(board, player);
+            makeMove(board, newBoard, player, s);
+            board = newBoard;
+            % Move out
+            moveOut(false);
             if isWon(board, player)
                 gameCont = false;
                 disp('Game over. Try again?');
@@ -76,4 +76,8 @@ while gameCont
     fprintf('\n')
     turn = turn + 1;
 end
+% Close the Arduino
+fclose(s);
+delete(s);
+clear s;
 end
