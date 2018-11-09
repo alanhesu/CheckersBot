@@ -1,4 +1,4 @@
-function moveToSquare(row, col)
+function moveToSquare(row, col, net)
 
 
 

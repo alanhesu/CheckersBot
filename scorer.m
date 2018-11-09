@@ -1,14 +1,14 @@
 function score = scorer(board, player)
 % Instantiate score and starting position based on which side player is
 score = 0;
-if player == 'W'
+if player == 'R'
     start = 1;
     fin = 8;
     opponent = 'B';
 elseif player == 'B'
     start = 8;
     fin = 1;
-    opponent = 'W';
+    opponent = 'R';
 end
 % Iterate through board
 for r = 1:8

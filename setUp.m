@@ -1,8 +1,8 @@
 function setUp
 % Set up the checkers board
-board = ['x', 'W', 'x', 'W', 'x', 'W', 'x', 'W'
-        'W', 'x', 'W', 'x', 'W', 'x', 'W', 'x'
-        'x', 'W', 'x', 'W', 'x', 'W', 'x', 'W'
+board = ['x', 'R', 'x', 'R', 'x', 'R', 'x', 'R'
+        'R', 'x', 'R', 'x', 'R', 'x', 'R', 'x'
+        'x', 'R', 'x', 'R', 'x', 'R', 'x', 'R'
         'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x'
         'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x'
         'B', 'x', 'B', 'x', 'B', 'x', 'B', 'x'
@@ -17,10 +17,32 @@ end
 s = serial('COM5');
 set(s, 'BaudRate', 9600);
 fopen(s);
+% Initialize the camera
+net = netOpen('192.168.0.1', 2000);
+flushinput(net);
+
+%
+% URL to get a camera snapshot
+url='http://192.168.0.20/image.jpg';
+img_file='image.jpg';
+% temporary file used to store the camera image
+user='admin';
+% username and password used to perform authentication
+pass='';
+for i = 1:100
+    % grab the camera image and store it in a local temporary file
+    urlwrite(url,img_file,'Authentication','Basic','Username',user,'Password',pass);
+    % show the camera image and delete the local temporary file
+    cam_capture = imread(img_file);
+    [~, im] = bigMask(cam_capture);
+end
+coord = initBoardImage(im);
+
+
 % Move out
 moveIn(false);
-% Player plays as white
-person = 'W';
+% Player plays as red
+person = 'R';
 % Start the game
 gameCont = true;
 turn = 1;
@@ -29,7 +51,7 @@ fprintf('\n');
 while gameCont
     % Take turns
     if mod(turn, 2) == 1
-        player = 'W';
+        player = 'R';
     else
         player = 'B';
     end
@@ -43,7 +65,7 @@ while gameCont
             % Wait 20 seconds
             pause(20);
             % Update the board
-            board = readBoard();
+            board = getBoardImage(im, coord);
             % Determine if the game is over after the player moves
             if isWon(board, player)
                 gameCont = false;
@@ -61,10 +83,10 @@ while gameCont
             moveIn(true);
             % CPU makes its move
             newBoard = decisionMaker(board, player);
-            makeMove(board, newBoard, player, s);
+            makeMove(board, newBoard, player, s, net);
             board = newBoard;
             % Move out
-            moveOut(false);
+            moveIn(false);
             if isWon(board, player)
                 gameCont = false;
                 disp('Game over. Try again?');

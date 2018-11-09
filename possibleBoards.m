@@ -4,7 +4,7 @@ boards = {};
 % Return boards as empty if board is empty (shouldn't be though)
 if ~isempty(board)
     % Set direction based on player
-    if (player == 'W')
+    if (player == 'R')
         dir = 1;    
     elseif (player == 'B')
         dir = -1;

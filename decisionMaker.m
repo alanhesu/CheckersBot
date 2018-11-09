@@ -2,10 +2,10 @@ function board = decisionMaker(boards, player)
 % Randomize the boards
 boards = boards(randperm(length(boards)));
 % Now create the opponent's response
-if player == 'W'
+if player == 'R'
     opponent = 'B';
 elseif player == 'B'
-    opponent = 'W';
+    opponent = 'R';
 else
     error('Invalid player')
 end

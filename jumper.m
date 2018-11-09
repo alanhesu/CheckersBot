@@ -3,7 +3,7 @@ function boards = jumper(board, r, c)
 boards = {};
 player = board(r, c);
 % Set direction
-if player == 'W'
+if player == 'R'
     dir = 1;
 elseif player == 'B'
     dir = -1;
