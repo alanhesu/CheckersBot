@@ -5,8 +5,8 @@ function board = getBoardImage(im, coord)
 	[sizeX, sizeY, sizeZ] = size(im);
 	[rowsInImage, columnsInImage] = meshgrid(1:sizeY, 1:sizeX);
 	
-	rMin = 7;
-	rMax = 20;
+	rMin = 12;
+	rMax = 40;
 	im_hsv = rgb2hsv(im);
 	[centers, radii] = imfindcircles(im, [rMin, rMax], 'EdgeThreshold', .1, 'Method', 'TwoStage', 'Sensitivity', .87);
 % 	viscircles(centers, radii, 'Color', 'b');

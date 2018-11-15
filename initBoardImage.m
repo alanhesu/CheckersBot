@@ -8,8 +8,8 @@ function coord = initBoardImage(im)
         end
     end
 
-    rMin = 7;
-    rMax = 20;
+    rMin = 12;
+    rMax = 40;
     im_bw = im2bw(im, .5);
     [centers, radii] = imfindcircles(im, [rMin, rMax], 'EdgeThreshold', .1, 'Method', 'TwoStage', 'Sensitivity', .87);
     viscircles(centers, radii, 'Color', 'b');

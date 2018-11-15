@@ -10,6 +10,7 @@ board = ['x', 'R', 'x', 'R', 'x', 'R', 'x', 'R'
         'B', 'x', 'B', 'x', 'B', 'x', 'B', 'x'];
     
 % Initialize the Arduino
+%{
 if ~isempty(instrfind)
 	fclose(instrfind);
 	delete(instrfind);
@@ -17,28 +18,36 @@ end
 s = serial('COM5');
 set(s, 'BaudRate', 9600);
 fopen(s);
-% Initialize the camera
-net = netOpen('192.168.0.1', 2000);
-flushinput(net);
-
-%
-% URL to get a camera snapshot
-url='http://192.168.0.20/image.jpg';
-img_file='image.jpg';
-% temporary file used to store the camera image
-user='admin';
-% username and password used to perform authentication
-pass='';
-for i = 1:100
-    % grab the camera image and store it in a local temporary file
-    urlwrite(url,img_file,'Authentication','Basic','Username',user,'Password',pass);
-    % show the camera image and delete the local temporary file
-    cam_capture = imread(img_file);
-    [~, im] = bigMask(cam_capture);
+%}
+cam = webcam('HD 720P Webcam');
+% % Initialize the camera
+% net = netOpen('192.168.0.1', 2000);
+% flushinput(net);
+% 
+% %
+% % URL to get a camera snapshot
+% url='http://192.168.0.20/image.jpg';
+% img_file='image.jpg';
+% % temporary file used to store the camera image
+% user='admin';
+% % username and password used to perform authentication
+% pass='';
+for r = 1:8
+	for c = 1:8
+		coord{r,c} = [0,0];
+	end
 end
-coord = initBoardImage(im);
+while coord{1,1} == [0,0]
+    % grab the camera image and store it in a local temporary file
+%     urlwrite(url,img_file,'Authentication','Basic','Username',user,'Password',pass);
+    % show the camera image and delete the local temporary file
+%     cam_capture = imread(img_file);
+	cam_capture = snapshot(cam);
+    [~, im] = webcamMask(cam_capture);
+	coord = initBoardImage(im);			
+end
 
-
+%%
 % Move out
 moveIn(false);
 % Player plays as red
