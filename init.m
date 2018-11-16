@@ -5,7 +5,7 @@ if ~isempty(instrfind)
 	fclose(instrfind);
 	delete(instrfind);
 end
-s = serial('COM10');
+s = serial('COM11');
 set(s, 'BaudRate', 9600);
 fopen(s);
 %%
