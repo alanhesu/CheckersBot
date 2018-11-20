@@ -20,9 +20,11 @@ set(s, 'BaudRate', 9600);
 fopen(s);
 
 cam = webcam('HD 720P Webcam');
+%%
 % Connect to the Epson
 net = netOpen('192.168.0.1', 2000);
 flushinput(net);
+%%
 % 
 % % Initialize the camera
 % % URL to get a camera snapshot
@@ -95,7 +97,7 @@ while gameCont
             makeMove(board, newBoard, player, s, net);
             board = newBoard;
             % Move out
-            moveIn(false, net);
+            moveToSide(net);
             if isWon(board, player)
                 gameCont = false;
                 disp('Game over. Try again?');

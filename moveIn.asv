@@ -1,11 +1,11 @@
 function moveIn(bool, net)
 
 % x goes from -600 to -300
-% y goes from -200 to 200
+% y goes from 
 
 if bool
     epsonPoint(net, 1, [-450, 0, 260, 90, 0, -180], [1, 1, 1]);
 else
-    epsonPoint(net, 1, [-450, -250, 260, 90, 0, -180], [1, 1, 1]);
+    epsonPoint(net, 1, [x, 0, 260, 90, 0, -180], [1, 1, 1]);
 end
 end
