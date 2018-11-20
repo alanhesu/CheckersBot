@@ -10,7 +10,7 @@ board = ['x', 'R', 'x', 'R', 'x', 'R', 'x', 'R'
         'B', 'x', 'B', 'x', 'B', 'x', 'B', 'x'];
     
 % Initialize the Arduino
-%{
+
 if ~isempty(instrfind)
 	fclose(instrfind);
 	delete(instrfind);
@@ -18,13 +18,13 @@ end
 s = serial('COM5');
 set(s, 'BaudRate', 9600);
 fopen(s);
-%}
+
 cam = webcam('HD 720P Webcam');
-% % Initialize the camera
-% net = netOpen('192.168.0.1', 2000);
-% flushinput(net);
+% Connect to the Epson
+net = netOpen('192.168.0.1', 2000);
+flushinput(net);
 % 
-% %
+% % Initialize the camera
 % % URL to get a camera snapshot
 % url='http://192.168.0.20/image.jpg';
 % img_file='image.jpg';
@@ -89,13 +89,13 @@ while gameCont
             disp('Stalemate')
         else
             % Move in
-            moveIn(true);
+            moveIn(true, net);
             % CPU makes its move
             newBoard = decisionMaker(board, player);
             makeMove(board, newBoard, player, s, net);
             board = newBoard;
             % Move out
-            moveIn(false);
+            moveIn(false, net);
             if isWon(board, player)
                 gameCont = false;
                 disp('Game over. Try again?');
