@@ -1,6 +1,4 @@
 function coord = initBoardImage(im)
-    figure(3);
-    imshow(im);    
     coord = {8, 8};
     for r = 1:8
         for c = 1:8
@@ -8,13 +6,19 @@ function coord = initBoardImage(im)
         end
     end
 
-    rMin = 12;
-    rMax = 40;
-    im_bw = im2bw(im, .5);
-    [centers, radii] = imfindcircles(im, [rMin, rMax], 'EdgeThreshold', .1, 'Method', 'TwoStage', 'Sensitivity', .87);
-    viscircles(centers, radii, 'Color', 'b');
+    [mask1, blue] = blueMask(im);
+	[mask2, red] = redMask(im);
+	rMin = 7;
+	rMax = 20;
+% 	imshow(im);
+% 	hold on;
+	[centersBlue, radiiBlue] = imfindcircles(blue, [rMin, rMax], 'EdgeThreshold', .1, 'Method', 'TwoStage', 'Sensitivity', .87);
+	[centersRed, radiiRed] = imfindcircles(red, [rMin, rMax], 'EdgeThreshold', .1, 'Method', 'TwoStage', 'Sensitivity', .87);
+ 	viscircles(centersBlue, radiiBlue, 'Color', 'b');	
+	viscircles(centersRed, radiiRed, 'Color', 'r');
 
-    if length(centers) == 24
+    if length(centersBlue) == 12 && length(centersRed) == 12
+		centers = [centersBlue; centersRed];
         topRight = [max(centers(:,1)), min(centers(:,2))];
         botLeft = [min(centers(:,1)), max(centers(:,2))];
         

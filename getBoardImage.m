@@ -1,37 +1,38 @@
 function board = getBoardImage(im, coord)
 	board = char(8, 8);
+	for r = 1:8
+		for c = 1:8
+			board(r,c) = 'x';
+		end
+	end
 % 	figure;
 % 	imshow(im);
 	[sizeX, sizeY, sizeZ] = size(im);
 	[rowsInImage, columnsInImage] = meshgrid(1:sizeY, 1:sizeX);
 	
-	rMin = 12;
-	rMax = 40;
-	im_hsv = rgb2hsv(im);
-	[centers, radii] = imfindcircles(im, [rMin, rMax], 'EdgeThreshold', .1, 'Method', 'TwoStage', 'Sensitivity', .87);
-% 	viscircles(centers, radii, 'Color', 'b');
+	[mask1, blue] = blueMask(im);
+	[mask2, red] = redMask(im);
+	rMin = 7;
+	rMax = 20;
 	
-    if ~isempty(radii)
-        avgRad = mean(radii);
-        for r = 1:8
-            for c = 1:8			
-                board(r,c) = 'x';
-                for i = 1:length(centers(:,1))			
-                    if norm(coord{r, c} - centers(i,:)) < avgRad
-                        circlePixels = (rowsInImage - centers(i,1)).^2 + (columnsInImage - centers(i,2)).^2 <= (radii(i)*.7).^2;
-                        hue = im_hsv(:,:,1);
-                        red = im(:,:,1);
-                        blue = im(:,:,3);
-                        if mean(mean(red(circlePixels))) > mean(mean(blue(circlePixels)))
-                            board(r,c) = 'R';
-                            viscircles(centers(i,:), radii(i), 'Color', 'r');
-                        else
-                            board(r,c) = 'B';
-                            viscircles(centers(i,:), radii(i), 'Color', 'b');
-                        end
-                    end
-                end
-            end            
-        end
-    end
+    board = getPieces(board, red, coord, 'r', rMin, rMax);
+	board = getPieces(board, blue, coord, 'b', rMin, rMax);
+end
+
+function board = getPieces(board, im, coord, color, rMin, rMax)
+	[centers, radii] = imfindcircles(im, [rMin, rMax], 'EdgeThreshold', .1, 'Method', 'TwoStage', 'Sensitivity', .87);
+	
+	if ~isempty(radii)
+		avgRad = mean(radii);
+		for r = 1:8
+			for c = 1:8
+				for i = 1:length(centers(:,1))
+					if norm(coord{r, c} - centers(i,:)) < avgRad
+						board(r,c) = color;
+						viscircles(centers, radii, 'Color', color);
+					end
+				end
+			end
+		end
+	end	
 end
