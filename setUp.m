@@ -9,31 +9,23 @@ board = ['x', 'R', 'x', 'R', 'x', 'R', 'x', 'R'
         'x', 'B', 'x', 'B', 'x', 'B', 'x', 'B'
         'B', 'x', 'B', 'x', 'B', 'x', 'B', 'x'];
     
-% Initialize the Arduino
+%% Initialize the Arduino
 
 if ~isempty(instrfind)
 	fclose(instrfind);
 	delete(instrfind);
 end
-s = serial('COM5');
+s = serial('COM3');
 set(s, 'BaudRate', 9600);
 fopen(s);
-
+%% Initialize the camera
+clear('cam')
 cam = webcam('HD 720P Webcam');
 %%
 % Connect to the Epson
 net = netOpen('192.168.0.1', 2000);
 flushinput(net);
 %%
-% 
-% % Initialize the camera
-% % URL to get a camera snapshot
-% url='http://192.168.0.20/image.jpg';
-% img_file='image.jpg';
-% % temporary file used to store the camera image
-% user='admin';
-% % username and password used to perform authentication
-% pass='';
 for r = 1:8
 	for c = 1:8
 		coord{r,c} = [0,0];
@@ -45,13 +37,13 @@ while coord{1,1} == [0,0]
     % show the camera image and delete the local temporary file
 %     cam_capture = imread(img_file);
 	cam_capture = snapshot(cam);
-    [~, im] = webcamMask(cam_capture);
-	coord = initBoardImage(im);			
+    %[~, im] = webcamMask(cam_capture);
+	coord = initBoardImage(cam_capture);			
 end
 
 %%
 % Move out
-moveIn(false);
+moveIn(false, net);
 % Player plays as red
 person = 'R';
 % Start the game
@@ -73,9 +65,11 @@ while gameCont
             gameCont = false;
             disp('Stalemate');
         else
-            % Wait 20 seconds
-            pause(20);
+            % Wait 10 seconds
+            pause(10);
             % Update the board
+            im = snapshot(cam);
+            imshow(im);
             board = getBoardImage(im, coord);
             % Determine if the game is over after the player moves
             if isWon(board, player)

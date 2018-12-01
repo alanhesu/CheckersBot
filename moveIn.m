@@ -8,4 +8,5 @@ if bool
 else
     epsonPoint(net, 1, [-450, -250, 260, 90, 0, -180], [1, 1, 1]);
 end
+pause(2)
 end

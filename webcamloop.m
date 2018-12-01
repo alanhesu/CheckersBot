@@ -1,7 +1,5 @@
-close all;
-clear;
 
-cam = webcam('HD 720P Webcam');
+%cam = webcam('HD 720P Webcam');
 while(true)
 	im = snapshot(cam);	
 	[mask1, blue] = blueMask(im);

@@ -7,5 +7,6 @@ outerPos = [-200, 400, 260, 90, 0, -180];
 % Move somewhere
 epsonPoint(net, 1, outerPos, [1, 1, 1])
 
+%pause(2);
 
 end
