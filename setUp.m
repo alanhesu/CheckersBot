@@ -11,10 +11,10 @@ board = ['x', 'R', 'x', 'R', 'x', 'R', 'x', 'R'
     
 %% Initialize the Arduino
 
-if ~isempty(instrfind)
-	fclose(instrfind);
-	delete(instrfind);
-end
+% if ~isempty(instrfind)
+% 	fclose(instrfind);
+% 	delete(instrfind);
+% end
 s = serial('COM3');
 set(s, 'BaudRate', 9600);
 fopen(s);
@@ -87,7 +87,7 @@ while gameCont
             % Move in
             moveIn(true, net);
             % CPU makes its move
-            newBoard = decisionMaker(board, player);
+            newBoard = decisionMaker(boards, player);
             makeMove(board, newBoard, player, s, net);
             board = newBoard;
             % Move out
@@ -103,7 +103,7 @@ while gameCont
     fprintf('\n')
     turn = turn + 1;
 end
-% Close the Arduino
+%% Close the Arduino
 fclose(s);
 delete(s);
 clear s;

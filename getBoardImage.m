@@ -6,7 +6,8 @@ function board = getBoardImage(im, coord)
 		end
 	end
 % 	figure;
-% 	imshow(im);
+ 	%imshow(im);
+    %hold on
 	[sizeX, sizeY, sizeZ] = size(im);
 	[rowsInImage, columnsInImage] = meshgrid(1:sizeY, 1:sizeX);
 	
@@ -15,8 +16,8 @@ function board = getBoardImage(im, coord)
 	rMin = 7;
 	rMax = 20;
 	
-    board = getPieces(board, red, coord, 'r', rMin, rMax);
-	board = getPieces(board, blue, coord, 'b', rMin, rMax);
+    board = getPieces(board, red, coord, 'R', rMin, rMax);
+	board = getPieces(board, blue, coord, 'B', rMin, rMax);
 end
 
 function board = getPieces(board, im, coord, color, rMin, rMax)
